@@ -1,1 +1,0 @@
-# GoIT JavaScript course homework
