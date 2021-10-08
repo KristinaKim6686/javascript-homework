@@ -65,12 +65,13 @@ const galleryItems = [
 ];
 
 const refs = {
-  modalLightbox :document.querySelector('.js-lightbox'),
-  closeButton : document.querySelector('.lightbox__button'),
-  galleryPreview: document.querySelector('.gallery.js-gallery'),
+  modalLightbox: document.querySelector('.js-lightbox'),
+  closeButton: document.querySelector('.lightbox__button'),
+  galleryPreview: document.querySelector('.js-gallery'),
   lightboxOverlay: document.querySelector('.lightbox__overlay'),
-  lightBoxImage : document.querySelector('.lightbox__image'),
+  lightBoxImage: document.querySelector('.lightbox__image'),
   galleryPreviewImage: document.querySelectorAll('.gallery__image'),
+  dataSource: [],
 }
 const makeGalleryMarkup = galleryItems => {
   const { preview, original, description } = galleryItems;
@@ -106,16 +107,16 @@ function onOpenModal(event) {
   if (event.target.nodeName !== 'IMG') {
     return;
   }
-    refs.modalLightbox.classList.add('is-open');
+  refs.modalLightbox.classList.add('is-open');
 
-    refs.lightBoxImage.src = event.target.dataset.source;
-    console.log(refs.lightBoxImage.src);
-  }
- 
+  refs.lightBoxImage.src = event.target.dataset.source;
+  console.log(refs.lightBoxImage.src);
+}
+
 function onCloseModal() {
   refs.modalLightbox.classList.remove('is-open');
   refs.modalLightbox.setAttribute('src', '');
-    // refs.modalLightbox.removeAttribute('src');
+  // refs.modalLightbox.removeAttribute('src');
 }
 function onBackdropClick(event) {
   if (event.currentTarget === event.target) {
@@ -124,6 +125,51 @@ function onBackdropClick(event) {
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-      refs.modalLightbox.classList.remove('is-open');
+    refs.modalLightbox.classList.remove('is-open');
   }
 })
+
+// slider
+// document.addEventListener('keydown', (e) => {
+//   const currentIndex = refs.galleryItems.src;
+// });
+// function onRightClick(currentIndex) {
+//   let nextIndex = currentIndex ? currentIndex : 0;
+
+//   if (nextIndex < refs.galleryItems.length - 1) {
+//     nextIndex += 1;
+//   } else {
+//     nextIndex = 0;
+//   }
+
+//   if (e.key === 'ArrowRight') {
+//     currentIndex+=1
+//   }
+// }
+document.addEventListener('keydown', (e) => {
+  const currentIndex = galleryItems.findIndex(
+    (img) => img.original === refs.lightBoxImage.src
+  );
+
+  if (e.key === 'ArrowLeft') {
+    leftClick(currentIndex);
+  } else if (e.key === 'ArrowRight') {
+    rightClick(currentIndex);
+  }
+});
+function leftClick(currentIndex) {
+  let nextIndex = currentIndex - 1;
+  if (nextIndex === -1) {
+    nextIndex = refs.galleryPreviewImage.length - 1;
+  }
+  refs.lightBoxImage.src = galleryItems[nextIndex].original;
+  refs.lightBoxImage.alt=galleryItems[nextIndex].alt
+};
+function rightClick(currentIndex) {
+  let nextIndex = currentIndex + 1;
+  if (nextIndex === 0) {
+    nextIndex +=galleryItems.length+1;
+  }
+  refs.lightBoxImage.src = galleryItems[nextIndex].original;
+  refs.lightBoxImage.alt=galleryItems[nextIndex].alt
+}
